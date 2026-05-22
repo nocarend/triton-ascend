@@ -328,6 +328,9 @@ void TritonToLinalgPass::convertTTFunc(triton::FuncOp func,
   auto name = func.getName();
   auto type = func.getFunctionType();
 
+  llvm::errs() << "convertTTFunc" << name << "\n";
+  llvm::errs() << "convertTTFunc" << type << "\n";
+
   SmallVector<DictionaryAttr> argAttrs, resAttrs;
   func.getAllArgAttrs(argAttrs);
   func.getAllResultAttrs(resAttrs);
@@ -360,8 +363,11 @@ void TritonToLinalgPass::convertTTFunc(triton::FuncOp func,
           }
         });
         if (llvm::all_of(argVaildUser, [](Operation *userOp) {
+              llvm::errs() << "1 all_of(argVaildUser, [](Operation *userOp)" << userOp << "\n";
               return isa<UnrealizedConversionCastOp>(userOp);
             })) {
+          // llvm::errs() << "cast<UnrealizedConversionCastOp>(*argVaildUser.begin())" << *argVaildUser << "\n";
+          llvm::errs() << "cast<UnrealizedConversionCastOp>(*argVaildUser.begin())" << *argVaildUser.begin() << "\n";
           auto castOp = cast<UnrealizedConversionCastOp>(*argVaildUser.begin());
           if (castOp.getInputs().size() == 1 &&
               castOp.getOutputs().size() == 1) {
@@ -452,8 +458,10 @@ void TritonToLinalgPass::addDynamicLegal(
   target.addDynamicallyLegalOp<mlir::UnrealizedConversionCastOp>(
       [](mlir::Operation *op) {
         if (op->use_empty()) {
+          llvm::errs() << "false target.addDynamicallyLegalOp<mlir::UnrealizedConversionCastOp>(" << *op.getName() << "\n";
           return false;
         } else {
+          llvm::errs() << "true target.addDynamicallyLegalOp<mlir::UnrealizedConversionCastOp>(" << *op.getName() << "\n";
           return true;
         }
       });

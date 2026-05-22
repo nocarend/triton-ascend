@@ -1191,6 +1191,7 @@ void BlockDataParser::rewriteAddPtr(
     // Handle bitcast scenario
     auto memrefType = dyn_cast<BaseMemRefType>(data.getSourceRef().getType())
                           .cloneWith(std::nullopt, data.getResElemTyRef());
+    llvm::errs() << "1 data.hasResElemTy()" << op.getName() << " " << op.getLoc() << " " << memrefType << " " << data.getSourceRef() << "\n";
     UnrealizedConversionCastOp castOp =
         rewriter.create<mlir::UnrealizedConversionCastOp>(
             op.getLoc(), memrefType, data.getSourceRef());
@@ -1291,6 +1292,7 @@ void BlockDataParser::rewriteMakeTensorPtrOp(
     UnrealizedConversionCastOp castOp =
         rewriter.create<mlir::UnrealizedConversionCastOp>(loc, memrefType,
                                                           data.getSourceRef());
+    llvm::errs() << "2 data.hasResElemTy()" << op.getName() << " " << loc << " " << memrefType << " " << data.getSourceRef() << "\n";
     data.setSource(castOp.getOutputs()[0]);
   } else {
     data.setSource(rewriter.getRemappedValue(op.getBase()));
